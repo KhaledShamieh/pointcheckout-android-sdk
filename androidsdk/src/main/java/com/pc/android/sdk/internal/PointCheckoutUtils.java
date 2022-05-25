@@ -3,15 +3,8 @@
  */
 package com.pc.android.sdk.internal;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Base64;
-
-import com.google.android.gms.safetynet.SafetyNet;
-import com.google.android.gms.safetynet.SafetyNetApi;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.pc.android.sdk.PointCheckoutException;
 import com.pc.android.sdk.R;
 
@@ -39,59 +32,11 @@ public class PointCheckoutUtils {
     }
 
     public static void evaluateSafetyNetAsync(final Context context, final PointCheckoutSafetyNetListener listener) {
-
-        try {
-
-            SafetyNet.getClient(context).attest(generateNonce(), "AIzaSyDcQMrv-SM5vvPBiaSrmrFlEVo2HPFmh3I")
-                    .addOnSuccessListener(new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
-                        @Override
-                        public void onSuccess(SafetyNetApi.AttestationResponse attestationResponse) {
-                            listener.callback(evaluateJws(attestationResponse.getJwsResult()), context.getString(R.string.pointcheckout_not_secure));
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            e.printStackTrace();
-                            listener.callback(false, context.getString(R.string.pointcheckout_not_secure));
-                        }
-                    });
-
-        } catch (NoClassDefFoundError exception) {
-            listener.callback(!isDeviceRooted(), context.getString(R.string.pointcheckout_not_secure));
-        }
-
-
+        listener.callback(!isDeviceRooted(), context.getString(R.string.pointcheckout_not_secure));
     }
 
     public static void evaluateSafetyNet(final Context context, final PointCheckoutSafetyNetListener listener) {
-
-        final ProgressDialog dialog = ProgressDialog.show(context, "",
-                context.getString(R.string.pointcheckout_checking_device), true);
-        dialog.show();
-
-        try {
-
-            SafetyNet.getClient(context).attest(generateNonce(), "AIzaSyDcQMrv-SM5vvPBiaSrmrFlEVo2HPFmh3I")
-                    .addOnSuccessListener(new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
-                        @Override
-                        public void onSuccess(SafetyNetApi.AttestationResponse attestationResponse) {
-                            dialog.dismiss();
-                            listener.callback(evaluateJws(attestationResponse.getJwsResult()), context.getString(R.string.pointcheckout_not_secure));
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            dialog.dismiss();
-                            e.printStackTrace();
-                        }
-                    });
-        } catch (NoClassDefFoundError exception) {
-            dialog.dismiss();
-            listener.callback(!isDeviceRooted(), context.getString(R.string.pointcheckout_not_secure));
-        }
-
+        listener.callback(!isDeviceRooted(), context.getString(R.string.pointcheckout_not_secure));
     }
 
     private static boolean evaluateJws(String jwsResult) {
