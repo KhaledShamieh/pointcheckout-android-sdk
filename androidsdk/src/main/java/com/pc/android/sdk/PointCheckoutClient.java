@@ -1,6 +1,7 @@
 package com.pc.android.sdk;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 
 import com.pc.android.sdk.internal.PointCheckoutInternalClient;
@@ -12,6 +13,10 @@ public class PointCheckoutClient {
 
     private PointCheckoutInternalClient client;
 
+
+    public AlertDialog getAlertDialog(){
+        return client.modal;
+    }
     /**
      * @throws PointCheckoutException if the environment is null
      */

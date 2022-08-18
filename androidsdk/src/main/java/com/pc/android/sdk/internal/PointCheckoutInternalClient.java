@@ -25,7 +25,7 @@ public class PointCheckoutInternalClient {
     /**
      * The main modal that will show the payment page
      */
-    private AlertDialog modal;
+    public AlertDialog modal;
     /**
      * Indicates if whether the client is initialized or not
      */
